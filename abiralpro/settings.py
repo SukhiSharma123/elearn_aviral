@@ -40,13 +40,8 @@ INSTALLED_APPS = [
     'elearn',
     'rest_framework',
     'rest_framework_simplejwt',
-<<<<<<< HEAD
     'auditlog',
     'authentication',
-=======
-    # 'auditlog',
-    'authentication'
->>>>>>> d8e3709d4a693f5096bdb0771b7024288584a0a2
     
 ]
 
@@ -138,7 +133,6 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
