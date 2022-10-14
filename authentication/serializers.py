@@ -1,5 +1,4 @@
 from rest_framework import serializers
-<<<<<<< HEAD
 from django.contrib.auth import get_user_model 
 User = get_user_model()
 
@@ -24,7 +23,6 @@ class ChangePasswordSerializer(serializers.Serializer):
         if not user.check_password(attrs.get('old_password')):
             raise serializers.ValidationError('The old password is not correct so you cannot change the password')
         
-=======
 from .models import *
 
 
@@ -61,4 +59,3 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
->>>>>>> d8e3709d4a693f5096bdb0771b7024288584a0a2
