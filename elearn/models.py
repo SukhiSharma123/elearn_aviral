@@ -1,3 +1,4 @@
+from xml.dom import VALIDATION_ERR, ValidationErr
 from django.db import models
 
 # Create your models here.
@@ -25,12 +26,19 @@ class Class(models.Model):
     faculty = models.CharField(max_length=20,choices=faculty)
     year = models.CharField(max_length=10,choices=year)
 
+    def clean(self):
+        if Settings.objects.all().first().number_of_batches_boolean:
+            if Class.objects.count()==1:
+                raise VALIDATION_ERR('More classes cannot be added cause there is limitation in settings')
+        return super(Class,self).clean()
+
     def __str__(self):
         return self.faculty
 class Books(models.Model):
     name = models.CharField(max_length=100)
     year = models.CharField(max_length=20,choices=year)
     code_number = models.CharField(max_length=20)
+
 
     def __str__(self):
         return self.name
@@ -51,5 +59,17 @@ class EventNotification(models.Model):
     def __str__(self):
         return self.message
 
+class Settings(models.Model):
+    number_of_batches_boolean = models.BooleanField()
+    number_of_books_boolean = models.BooleanField()
+    number_of_teachers_boolean = models.BooleanField()
 
 
+
+
+class FeedBack(models.Model):
+    subject = models.CharField(max_length=40)
+    message = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.subject
