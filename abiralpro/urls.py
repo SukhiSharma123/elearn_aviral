@@ -19,5 +19,9 @@ from django.urls import path,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('elearn.urls')),
+<<<<<<< HEAD
     path('auth/',include('authentication.urls'))
+=======
+    path('',include('authentication.urls')),
+>>>>>>> d8e3709d4a693f5096bdb0771b7024288584a0a2
 ]

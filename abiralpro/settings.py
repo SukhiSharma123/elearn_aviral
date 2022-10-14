@@ -40,8 +40,13 @@ INSTALLED_APPS = [
     'elearn',
     'rest_framework',
     'rest_framework_simplejwt',
+<<<<<<< HEAD
     'auditlog',
     'authentication',
+=======
+    # 'auditlog',
+    'authentication'
+>>>>>>> d8e3709d4a693f5096bdb0771b7024288584a0a2
     
 ]
 
@@ -75,7 +80,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'abiralpro.wsgi.application'
 
+AUTH_USER_MODEL = "authentication.User"
 
+SITE_ID = 1
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
