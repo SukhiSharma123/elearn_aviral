@@ -2,8 +2,6 @@ from email.policy import default
 from enum import unique
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager,PermissionsMixin
-from django.contrib.auth import get_user_model
-User = get_user_model()
 
 
 class MyUserManager(BaseUserManager):
@@ -84,6 +82,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return str(self.email)
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+ 
 
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

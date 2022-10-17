@@ -13,5 +13,6 @@ urlpatterns = [
     path('create_settings/<int:pk>/',UpdateSettingLimitView.as_view()),
     path('create_feedback/',CreateFeedbackView.as_view()),
     path('get_feedback/',GetFeedBackView.as_view()),
-    path('update_feedback/',UpdateFeedBack.as_view())
+    path('update_feedback/',UpdateFeedBack.as_view()),
+    path('about_admin/',CreateAboutAmdinView.as_view())
 ]

@@ -2,6 +2,7 @@ from .serializers import *
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView,CreateAPIView,ListAPIView
 from .models import *
 from .custom_permission import AdminCheckPermission,DeveloperAdminCheckPermission
+from rest_framework.permissions import IsAuthenticated
 
 
 class CreateandGetClass(ListCreateAPIView):
@@ -78,3 +79,8 @@ class UpdateFeedBack(RetrieveUpdateDestroyAPIView):
     serializer_class = FeedbackSerializer
     queryset = FeedBack.objects.all()
 
+
+class CreateAboutAmdinView(ListCreateAPIView):
+    permission_classes=[IsAuthenticated]
+    serializer_class=[AboutAdminSerializer]
+    queryset = AboutAdmin.objects.all()

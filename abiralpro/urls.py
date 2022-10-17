@@ -16,12 +16,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include 
 
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view as swagger_get_schema_view
+
+
+schema_view = swagger_get_schema_view(
+    openapi.Info(
+        title="Posts API",
+        default_version='1.0.0',
+        description="API documentation of App",
+    ),
+    public=True,
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('elearn.urls')),
-<<<<<<< HEAD
-    path('auth/',include('authentication.urls'))
-=======
-    path('',include('authentication.urls')),
->>>>>>> d8e3709d4a693f5096bdb0771b7024288584a0a2
+    path('auth/',include('authentication.urls')),
+    path('swagger/schema/', schema_view.with_ui('swagger', cache_timeout=0), name="swagger-schema"),
 ]

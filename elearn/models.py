@@ -73,3 +73,11 @@ class FeedBack(models.Model):
 
     def __str__(self):
         return self.subject
+
+class AboutAdmin(models.Model):
+    about = models.CharField(max_length=200)
+
+
+    def __str__(self):
+        return self.about 
+

@@ -2,10 +2,14 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model 
 User = get_user_model()
 
-class UserLoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User 
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=100)
+    password = serializers.CharField(max_length=20)
+    class Meta():
         fields = ['email','password']
+        extra_kwargs = {
+            'password':{'write_only':True}
+        }
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(max_length=20)
@@ -16,12 +20,14 @@ class ChangePasswordSerializer(serializers.Serializer):
         fields = '__all__'
 
     def validate(self,attrs):
-        if attrs.get('new_password') != attrs.get('confrim_password'):
+        if attrs.get('new_password') != attrs.get('confirm_password'):
             raise serializers.ValidationError('The new password and confrim password does not match')
 
         user = self.context.get('request').user
         if not user.check_password(attrs.get('old_password')):
             raise serializers.ValidationError('The old password is not correct so you cannot change the password')
+
+        return attrs
         
 from .models import *
 

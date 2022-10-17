@@ -45,3 +45,9 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeedBack
         fields = '__all__'
+
+
+class AboutAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutAdmin
+        fields = '__all__'
