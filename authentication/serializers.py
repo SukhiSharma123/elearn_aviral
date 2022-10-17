@@ -41,20 +41,17 @@ class LoginSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
 class TeacherSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(required=False)
-    email = serializers.EmailField()
+    user = serializers.EmailField()
     full_name = serializers.CharField()
     contact = serializers.CharField()
-    password = serializers.CharField()
 
     class Meta:
         model = Teacher
-        fields = ['email','full_name','contact','password','user']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = '__all__'
 
 class StudentSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(required=False)
-    email = serializers.EmailField()
+    # user = serializers.CharField(required=False)
+    user = serializers.EmailField()
     full_name = serializers.CharField()
     registration_number = serializers.CharField()
     batch_name = serializers.CharField()
@@ -64,4 +61,3 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
-        extra_kwargs = {'password': {'write_only': True}}

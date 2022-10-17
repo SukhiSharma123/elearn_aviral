@@ -40,10 +40,10 @@ INSTALLED_APPS = [
     'elearn',
     'rest_framework',
     'rest_framework_simplejwt',
-    'auditlog',
+    # 'auditlog',
     'authentication',
     'rest_framework_simplejwt.token_blacklist',
-    'drf_yasg',
+    # 'drf_yasg',
     
 ]
 
