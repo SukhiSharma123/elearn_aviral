@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'elearn',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
     # 'auditlog',
     'authentication',
     'rest_framework_simplejwt.token_blacklist',
@@ -50,8 +51,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -131,6 +133,38 @@ REST_FRAMEWORK = {
 }
 
 
+#####Cors hearders
+CORS_ALLOW_ALL_ORIGINS=True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://yourwhitelistedip.com",
+    "http://localhost:1419",
+    "http://10.0.2.2:8000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+CORS_ALLOW_METHODS = [
+'DELETE',
+'GET',
+'OPTIONS',
+'PATCH',
+'POST',
+'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -146,8 +180,8 @@ AUTH_USER_MODEL = 'authentication.User'
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=3),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
