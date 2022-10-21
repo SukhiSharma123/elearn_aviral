@@ -6,9 +6,10 @@ from django.contrib.auth import authenticate
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListCreateAPIView
+from .permissions import *
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -52,57 +53,13 @@ class LogOutView(APIView):
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
             
-class TeacherAPIView(ListCreateAPIView):
-    serializer_class = TeacherSerializer
-    permission_classes = [AllowAny]
 
-    def get_queryset(self):
-        return Teacher.objects.all()
-
-    def post(self, request):
-        if self.request.user.is_superuser:
-            serializer = self.serializer_class(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            email = request.data.get("user")
-            password = request.data.get("password")
-            if password is None:
-                return Response({"Message":"Password is missing!!"}, status=status.HTTP_404_NOT_FOUND)
-            if User.objects.filter(username=email, email=email).exists():
-                return Response({"Message":"Already Exists"}, status=status.HTTP_404_NOT_FOUND)
-            else:
-                user = User.objects.create(username=email, email=email)
-                user.set_password(request.data.get("password"))
-                user.user_role = 'teacher'
-                user.save()
-                Teacher.objects.create(user=user, full_name=request.data.get("full_name"), contact=request.data.get("contact"))
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"Message":"You are not Super User!!"}, status=status.HTTP_403_FORBIDDEN)
-
-
-class StudentAPIView(ListCreateAPIView):
+class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = Student.objects.all()
 
-    def get_queryset(self):
-        return Student.objects.all()
-
-    def post(self, request):
-        if self.request.user.is_superuser:
-            serializer = self.serializer_class(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            email = request.data.get("user")
-            password = request.data.get("password")
-            if password is None:
-                return Response({"Message":"Password is missing!!"}, status=status.HTTP_404_NOT_FOUND)
-            if User.objects.filter(username=email, email=email).exists():
-                return Response({"Message":"Already Exists"}, status=status.HTTP_404_NOT_FOUND)
-            else:
-                user = User.objects.create(username=email, email=email)
-                user.set_password(request.data.get("password"))
-                user.user_role = 'student'
-                user.save()
-                Student.objects.create(user=user, full_name=request.data.get("full_name"), registration_number=request.data.get("registration_number"), batch_name=request.data.get("batch_name"), contact=request.data.get("contact"),dob=request.data.get("dob"))
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"Message":"You are not Super User!!"}, status=status.HTTP_403_FORBIDDEN)
+class TeacherViewSet(viewsets.ModelViewSet):
+    serializer_class = TeacherSerializer
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = Teacher.objects.all()

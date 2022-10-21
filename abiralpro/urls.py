@@ -33,5 +33,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('elearn.urls')),
     path('auth/',include('authentication.urls')),
+    path('teacher/',include('teacherapp.urls')),
     # path('swagger/schema/', schema_view.with_ui('swagger', cache_timeout=0), name="swagger-schema"),
 ]

@@ -1,11 +1,9 @@
-from email.policy import default
-from enum import unique
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager,PermissionsMixin
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email,phonenumber,password=None):
+    def create_user(self, email,password=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
@@ -14,24 +12,22 @@ class MyUserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
 
         user = self.model(
-            email=self.normalize_email(email),
-            phonenumber=phonenumber
+            email=self.normalize_email(email)
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email,phonenumber,username,password=None):
+    def create_superuser(self, email,password=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
         user = self.model(
             email=email,
-            phonenumber=phonenumber,
             is_staff = True, 
-            username=username,
+            username=email,
             is_superuser = True, 
             user_role = 'superuser',
         )
@@ -50,23 +46,18 @@ USER_ROLE = (
     ("user","user"),
     ("vendor","vendor"),
     ("superuser","superuser"),
-    ("developer","developer")
+    ("developer","developer"),
+    ("teacher","teacher"),
+    ("student","student"),
     )
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255)
-    phonenumber = models.CharField(max_length=255, blank=True, null=True)
-    fullname = models.CharField(max_length=200, blank=True, null=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
-    profilepicture = models.ImageField(upload_to='profilepicture/' ,blank=True, null=True)
-    # new_phone = models.CharField(max_length=255, blank=True, null=True, unique=True)
     email = models.EmailField(max_length=255, blank=True, null=True,unique=True)
-    # new_email = models.EmailField(max_length=255, blank=True, null=True, unique=True)
-    # otp = models.CharField(max_length=10)
     is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    user_role = models.CharField(max_length=50, default="user", choices=USER_ROLE)
+    user_role = models.CharField(max_length=50, default="student", choices=USER_ROLE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     auth_provider = models.CharField(
@@ -74,7 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=False, default=AUTH_PROVIDERS.get('email'))
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['phonenumber','username']
+    REQUIRED_FIELDS = ['username']
     # USERNAME_FIELD = 'email'
     # REQUIRED_FIELDS = ['username']
 
@@ -88,7 +79,7 @@ User = get_user_model()
  
 
 class Teacher(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='teacher')
     full_name = models.CharField(max_length=255)
     contact = models.CharField(max_length=255)
 
@@ -96,7 +87,7 @@ class Teacher(models.Model):
         return str(self.full_name)
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student')
     full_name = models.CharField(max_length=255)
     registration_number = models.CharField(max_length=255)
     batch_name = models.CharField(max_length=255)

@@ -1,3 +1,4 @@
+import email
 from rest_framework import serializers
 from django.contrib.auth import get_user_model 
 User = get_user_model()
@@ -32,26 +33,63 @@ class ChangePasswordSerializer(serializers.Serializer):
 from .models import *
 
 
-class LoginSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField()
-
-    class Meta:
+class UserSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=100)
+    password = serializers.CharField(max_length=20)
+    class Meta():
         model = User
-        fields = ['email']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['email','password']
+        extra_kwargs = {
+            'password':{'write_only':True}
+        }
 
 class TeacherSerializer(serializers.ModelSerializer):
-    user = serializers.EmailField()
+    user = UserSerializer()
     full_name = serializers.CharField()
     contact = serializers.CharField()
 
     class Meta:
         model = Teacher
         fields = '__all__'
+    
+    def create(self, validated_data):
+        user = validated_data.pop('user')
+        if User.objects.filter(email=user['email']).exists():
+            raise serializers.ValidationError('User Exists')
+        else:
+            teacher_user = User.objects.create(username=user['email'], email=user['email'])
+            teacher_user.set_password(user['password'])
+            teacher_user.user_role = 'teacher'
+            teacher_user.save()
+            student = Teacher.objects.create(
+                user=teacher_user, 
+                full_name = validated_data['full_name'], 
+                contact=validated_data['contact'],
+                )
+            return student
+    
+    def update(self, instance, validated_data):
+        user = validated_data.pop('user')
+        if User.objects.filter(email=user['email']).exists():
+            raise serializers.ValidationError('User Exists')
+        else:
+            if user['email'] is not None:
+                student_user = User.objects.get(email=instance.user.email)
+                student_user.email = user['email']
+                student_user.username = user['email']
+                student_user.save()
+                instance.user = student_user
+                instance.full_name = validated_data.get('full_name', instance.full_name)
+                instance.contact = validated_data.get('contact', instance.contact)
+                instance.save()
+            else:
+                instance.full_name = validated_data.get('full_name', instance.full_name)
+                instance.contact = validated_data.get('contact', instance.contact)
+                instance.save()
+        return instance
 
 class StudentSerializer(serializers.ModelSerializer):
-    # user = serializers.CharField(required=False)
-    user = serializers.EmailField()
+    user = UserSerializer()
     full_name = serializers.CharField()
     registration_number = serializers.CharField()
     batch_name = serializers.CharField()
@@ -61,3 +99,49 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
+
+    def create(self, validated_data):
+        user = validated_data.pop('user')
+        if User.objects.filter(email=user['email']).exists():
+            raise serializers.ValidationError('User Exists')
+        else:
+            student_user = User.objects.create(username=user['email'], email=user['email'])
+            student_user.set_password(user['password'])
+            student_user.user_role = 'student'
+            student_user.save()
+            student = Student.objects.create(
+                user=student_user, 
+                full_name = validated_data['full_name'], 
+                registration_number=validated_data['registration_number'],
+                batch_name=validated_data['batch_name'],
+                contact=validated_data['contact'],
+                dob=validated_data['dob'],
+                )
+            return student
+    
+    def update(self, instance, validated_data):
+        user = validated_data.pop('user')
+        if User.objects.filter(email=user['email']).exists():
+            raise serializers.ValidationError('User Exists')
+        else:
+            if user['email'] is not None:
+                student_user = User.objects.get(email=instance.user.email)
+                student_user.email = user['email']
+                student_user.username = user['email']
+                student_user.save()
+                instance.user = student_user
+                instance.full_name = validated_data.get('full_name', instance.full_name)
+                instance.registration_number = validated_data.get('registration_number', instance.registration_number)
+                instance.batch_name = validated_data.get('batch_name', instance.batch_name)
+                instance.contact = validated_data.get('contact', instance.contact)
+                instance.dob = validated_data.get('dob', instance.dob)
+                instance.save()
+            else:
+                instance.full_name = validated_data.get('full_name', instance.full_name)
+                instance.registration_number = validated_data.get('registration_number', instance.registration_number)
+                instance.batch_name = validated_data.get('batch_name', instance.batch_name)
+                instance.contact = validated_data.get('contact', instance.contact)
+                instance.dob = validated_data.get('dob', instance.dob)
+                instance.save()
+        return instance
+
