@@ -24,10 +24,10 @@ from django.urls import path,include
 #     openapi.Info(
 #         title="Posts API",
 #         default_version='1.0.0',
-#         description="API documentation of App",
-#     ),
+#        description="API documentation of App",
+#    ),
 #     public=True,
-# )
+#  )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
