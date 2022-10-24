@@ -7,6 +7,7 @@ router.register('attendence', AttendenceViewSet, basename='attendence')
 router.register('message', MessageViewSet, basename='message')
 router.register('assignment', AssignmentViewSet, basename='assignment')
 router.register('notes', NotesViewSet, basename='notes')
+router.register('subject', SubjectViewSet, basename='subject')
 
 urlpatterns = [
     path('', include(router.urls)),

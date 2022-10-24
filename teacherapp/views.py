@@ -27,4 +27,10 @@ class NotesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsMessageOrReadOnly]
     queryset = Notes.objects.all()
 
+
+class SubjectViewSet(viewsets.ModelViewSet):
+    serializer_class = SubjectSerializer
+    permission_classes = [IsMessageOrReadOnly]
+    queryset = Subject.objects.all()
+
 # Create your views here.

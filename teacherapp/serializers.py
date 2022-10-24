@@ -1,6 +1,6 @@
 from turtle import title
 from rest_framework import serializers
-from .models import Attendence, Assignment, Message, Notes
+from .models import Attendence, Assignment, Message, Notes, Subject
 from django.contrib.auth import get_user_model 
 User = get_user_model()
 from authentication.models import Student, Teacher
@@ -190,5 +190,43 @@ class NotesSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
         instance.file = validated_data.get('file', instance.file)
+        instance.save()
+        return instance
+
+class SubjectSerializer(serializers.ModelSerializer):
+    subject = SubjectViewSerializer()
+    subject_name = serializers.CharField()
+    created_on= serializers.CharField(required=False)
+    created_by = TeacherViewSerializer(required=False)
+    
+
+    class Meta:
+        model = Subject
+        fields = '__all__'
+    
+    def create(self, validated_data):
+        subject = validated_data.pop('subject')
+        if Class.objects.filter(id=subject['id']).exists():
+            class_detail = Class.objects.get(id=subject['id'])
+        else:
+            raise serializers.ValidationError('Not Exists')
+        if Teacher.objects.filter(user=User.objects.get(username=self.context['request'].user.username)).exists():
+            subject = Subject.objects.create(
+                subject=class_detail, 
+                subject_name = validated_data['subject_name'], 
+                created_by = Teacher.objects.get(user=User.objects.get(username=self.context['request'].user.username)),
+                )
+            return subject
+        else:
+            raise serializers.ValidationError('Your Teacher Account has been deleted')
+    
+    def update(self, instance, validated_data):
+        subject = validated_data.pop('subject')
+        if Class.objects.filter(id=subject['id']).exists():
+            class_detail = Class.objects.get(id=subject['id'])
+        else:
+            raise serializers.ValidationError('Not Exists')
+        instance.subject = class_detail
+        instance.subject_name = validated_data.get('message', instance.message)
         instance.save()
         return instance

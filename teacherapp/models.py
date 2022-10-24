@@ -44,3 +44,10 @@ class Notes(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
+class Subject(models.Model):
+    subject_name = models.CharField(max_length=255)
+    subject = models.ForeignKey(Class, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+
+
