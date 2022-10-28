@@ -31,9 +31,47 @@ class SubjectViewSerializer(serializers.ModelSerializer):
         model = Class
         fields = '__all__'
 
+class SubjectSerializer(serializers.ModelSerializer):
+    subject = SubjectViewSerializer()
+    subject_name = serializers.CharField()
+    created_on= serializers.CharField(required=False)
+    created_by = TeacherViewSerializer(required=False)
+    
+
+    class Meta:
+        model = Subject
+        fields = '__all__'
+    
+    def create(self, validated_data):
+        subject = validated_data.pop('subject')
+        if Class.objects.filter(id=subject['id']).exists():
+            class_detail = Class.objects.get(id=subject['id'])
+        else:
+            raise serializers.ValidationError('Not Exists')
+        if Teacher.objects.filter(user=User.objects.get(username=self.context['request'].user.username)).exists():
+            subject = Subject.objects.create(
+                subject=class_detail, 
+                subject_name = validated_data['subject_name'], 
+                created_by = Teacher.objects.get(user=User.objects.get(username=self.context['request'].user.username)),
+                )
+            return subject
+        else:
+            raise serializers.ValidationError('Your Teacher Account has been deleted')
+    
+    def update(self, instance, validated_data):
+        subject = validated_data.pop('subject')
+        if Class.objects.filter(id=subject['id']).exists():
+            class_detail = Class.objects.get(id=subject['id'])
+        else:
+            raise serializers.ValidationError('Not Exists')
+        instance.subject = class_detail
+        instance.subject_name = validated_data.get('message', instance.message)
+        instance.save()
+        return instance
+
 class AttendenceSerializer(serializers.ModelSerializer):
     student = StudentViewSerializer()
-    subject = SubjectViewSerializer()
+    subject = SubjectSerializer()
     status = serializers.CharField()
     attended_on= serializers.CharField(required=False)
     attended_by = TeacherViewSerializer(required=False)
@@ -51,13 +89,13 @@ class AttendenceSerializer(serializers.ModelSerializer):
         else:
             raise serializers.ValidationError('Not Exists')
         if Class.objects.filter(id=subject['id']).exists():
-            class_detail = Class.objects.get(id=subject['id'])
+            subject_detail = Subject.objects.get(id=subject['id'])
         else:
             raise serializers.ValidationError('Not Exists')
         if Teacher.objects.filter(user=User.objects.get(username=self.context['request'].user.username)).exists():
             attendence = Attendence.objects.create(
                 student=student_detail, 
-                subject=class_detail, 
+                subject=subject_detail, 
                 status = validated_data['status'], 
                 attended_by = Teacher.objects.get(user=User.objects.get(username=self.context['request'].user.username)),
                 )
@@ -193,40 +231,3 @@ class NotesSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class SubjectSerializer(serializers.ModelSerializer):
-    subject = SubjectViewSerializer()
-    subject_name = serializers.CharField()
-    created_on= serializers.CharField(required=False)
-    created_by = TeacherViewSerializer(required=False)
-    
-
-    class Meta:
-        model = Subject
-        fields = '__all__'
-    
-    def create(self, validated_data):
-        subject = validated_data.pop('subject')
-        if Class.objects.filter(id=subject['id']).exists():
-            class_detail = Class.objects.get(id=subject['id'])
-        else:
-            raise serializers.ValidationError('Not Exists')
-        if Teacher.objects.filter(user=User.objects.get(username=self.context['request'].user.username)).exists():
-            subject = Subject.objects.create(
-                subject=class_detail, 
-                subject_name = validated_data['subject_name'], 
-                created_by = Teacher.objects.get(user=User.objects.get(username=self.context['request'].user.username)),
-                )
-            return subject
-        else:
-            raise serializers.ValidationError('Your Teacher Account has been deleted')
-    
-    def update(self, instance, validated_data):
-        subject = validated_data.pop('subject')
-        if Class.objects.filter(id=subject['id']).exists():
-            class_detail = Class.objects.get(id=subject['id'])
-        else:
-            raise serializers.ValidationError('Not Exists')
-        instance.subject = class_detail
-        instance.subject_name = validated_data.get('message', instance.message)
-        instance.save()
-        return instance
