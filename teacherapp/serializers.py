@@ -216,8 +216,14 @@ class NotesSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def create(self, validated_data):
+        subject = validated_data.pop('subject')
+        if Class.objects.filter(id=subject['id']).exists():
+            class_detail = Class.objects.get(id=subject['id'])
+        else:
+            raise serializers.ValidationError('Not Exists')
         if Teacher.objects.filter(user=User.objects.get(username=self.context['request'].user.username)).exists():
             note = Notes.objects.create(
+                subject=class_detail,
                 created_by = Teacher.objects.get(user=User.objects.get(username=self.context['request'].user.username)),
                 **validated_data
                 )
@@ -226,6 +232,12 @@ class NotesSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Your Teacher Account has been deleted')
     
     def update(self, instance, validated_data):
+        subject = validated_data.pop('subject')
+        if Class.objects.filter(id=subject['id']).exists():
+            class_detail = Class.objects.get(id=subject['id'])
+        else:
+            raise serializers.ValidationError('Not Exists')
+        instance.subject = class_detail
         instance.title = validated_data.get('title', instance.title)
         instance.file = validated_data.get('file', instance.file)
         instance.save()

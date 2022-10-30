@@ -11,4 +11,5 @@ urlpatterns = [
     path('change_password/',ChangePasswordView.as_view(),name='change_password'),
     path('logoout/',LogOutView.as_view(),name='logout'),
     path('', include(router.urls)),
+    path('student-list/',StudentListView.as_view(),name='student-list'),
 ]

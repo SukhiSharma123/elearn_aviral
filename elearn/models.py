@@ -26,11 +26,11 @@ class Class(models.Model):
     faculty = models.CharField(max_length=20,choices=faculty)
     year = models.CharField(max_length=10,choices=year)
 
-    def clean(self):
-        if Settings.objects.all().first().number_of_batches_boolean:
-            if Class.objects.count()==1:
-                raise VALIDATION_ERR('More classes cannot be added cause there is limitation in settings')
-        return super(Class,self).clean()
+    # def clean(self):
+    #     if Settings.objects.all().first().number_of_batches_boolean:
+    #         if Class.objects.count()==1:
+    #             raise VALIDATION_ERR('More classes cannot be added cause there is limitation in settings')
+    #     return super(Class,self).clean()
 
     def __str__(self):
         return self.faculty

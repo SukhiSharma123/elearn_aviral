@@ -11,4 +11,9 @@ router.register('subject', SubjectViewSet, basename='subject')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('subject-list/', SubjectListView.as_view(), name='subject-list'),
+    path('message-list/', MessageListView.as_view(), name='message-list'),
+    path('assignment-list/', AssignmentListView.as_view(), name='assignment-list'),
+    path('notes-list/', NotesListView.as_view(), name='notes-list'),
+    path('attendence-list/', AttendenceListView.as_view(), name='attendence-list'),
 ]

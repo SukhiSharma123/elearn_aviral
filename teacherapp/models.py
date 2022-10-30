@@ -15,10 +15,16 @@ submitted = (
     ('not submitted','not submitted'),
 )
 
+class Subject(models.Model):
+    subject_name = models.CharField(max_length=255)
+    subject = models.ForeignKey(Class, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    
 # Create your models here.
 class Attendence(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student_attendence')
-    subject = models.ForeignKey(Class, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     status = models.CharField(max_length=25, choices=attendence, blank=True, null=True)
     attended_on = models.DateTimeField(auto_now_add=True)
     attended_by = models.ForeignKey(Teacher, on_delete=models.DO_NOTHING, blank=True, null=True)
@@ -40,14 +46,11 @@ class Assignment(models.Model):
 
 class Notes(models.Model):
     title = models.CharField(max_length=255)
+    subject = models.ForeignKey(Class, on_delete=models.CASCADE)
     file = models.FileField(upload_to='note/')
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
-class Subject(models.Model):
-    subject_name = models.CharField(max_length=255)
-    subject = models.ForeignKey(Class, on_delete=models.CASCADE)
-    created_on = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+
 
 
