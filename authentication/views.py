@@ -29,7 +29,7 @@ class UserLoginView(APIView):
         user = authenticate(email = email ,password = password )
         if user is not None:
             tokens = get_tokens_for_user(user)
-            return Response({'msg':'The user is sucessfully logged in','tokens ':tokens},status=status.HTTP_200_OK)
+            return Response({'msg':'The user is sucessfully logged in','tokens ':tokens, 'user_role':user.user_role},status=status.HTTP_200_OK)
         else:
             return Response({'msg':'Something went wrong'},status=status.HTTP_400_BAD_REQUEST)
 
