@@ -32,9 +32,8 @@ class SubjectViewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SubjectSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
-    subject = SubjectViewSerializer(required=False)
-    subject_name = serializers.CharField(required=False)
+    subject = SubjectViewSerializer()
+    subject_name = serializers.CharField()
     created_on= serializers.CharField(required=False)
     created_by = TeacherViewSerializer(required=False)
     
@@ -70,9 +69,21 @@ class SubjectSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class SubjectGetSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    subject = SubjectViewSerializer(required=False)
+    subject_name = serializers.CharField(required=False)
+    created_on= serializers.CharField(required=False)
+    created_by = TeacherViewSerializer(required=False)
+    
+
+    class Meta:
+        model = Subject
+        fields = '__all__'
+
 class AttendenceSerializer(serializers.ModelSerializer):
     student = StudentViewSerializer()
-    subject = SubjectSerializer()
+    subject = SubjectGetSerializer()
     status = serializers.CharField()
     attended_on= serializers.CharField(required=False)
     attended_by = TeacherViewSerializer(required=False)
