@@ -133,7 +133,7 @@ class AttendenceSerializer(serializers.ModelSerializer):
         return instance
 
 class MessageSerializer(serializers.ModelSerializer):
-    subject = SubjectViewSerializer()
+    subject = SubjectGetSerializer()
     message = serializers.CharField()
     created_on= serializers.CharField(required=False)
     created_by = TeacherViewSerializer(required=False)
@@ -145,8 +145,8 @@ class MessageSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         subject = validated_data.pop('subject')
-        if Class.objects.filter(id=subject['id']).exists():
-            class_detail = Class.objects.get(id=subject['id'])
+        if Subject.objects.filter(id=subject['id']).exists():
+            class_detail = Subject.objects.get(id=subject['id'])
         else:
             raise serializers.ValidationError('Not Exists')
         if Teacher.objects.filter(user=User.objects.get(username=self.context['request'].user.username)).exists():
@@ -161,8 +161,8 @@ class MessageSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         subject = validated_data.pop('subject')
-        if Class.objects.filter(id=subject['id']).exists():
-            class_detail = Class.objects.get(id=subject['id'])
+        if Subject.objects.filter(id=subject['id']).exists():
+            class_detail = Subject.objects.get(id=subject['id'])
         else:
             raise serializers.ValidationError('Not Exists')
         instance.subject = class_detail

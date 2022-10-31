@@ -31,7 +31,7 @@ class Attendence(models.Model):
 
 class Message(models.Model):
     message = models.CharField(max_length=255)
-    subject = models.ForeignKey(Class, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
