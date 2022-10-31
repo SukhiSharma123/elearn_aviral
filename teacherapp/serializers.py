@@ -173,7 +173,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class AssignmentSerializer(serializers.ModelSerializer):
     title = serializers.CharField()
-    subject = SubjectViewSerializer()
+    subject = SubjectGetSerializer()
     assigned_date = serializers.DateField()
     deadline_date = serializers.DateField()
     status= serializers.CharField(required=False)
@@ -187,8 +187,8 @@ class AssignmentSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         subject = validated_data.pop('subject')
-        if Class.objects.filter(id=subject['id']).exists():
-            class_detail = Class.objects.get(id=subject['id'])
+        if Subject.objects.filter(id=subject['id']).exists():
+            class_detail = Subject.objects.get(id=subject['id'])
         else:
             raise serializers.ValidationError('Not Exists')
         if Teacher.objects.filter(user=User.objects.get(username=self.context['request'].user.username)).exists():
@@ -203,8 +203,8 @@ class AssignmentSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         subject = validated_data.pop('subject')
-        if Class.objects.filter(id=subject['id']).exists():
-            class_detail = Class.objects.get(id=subject['id'])
+        if Subject.objects.filter(id=subject['id']).exists():
+            class_detail = Subject.objects.get(id=subject['id'])
         else:
             raise serializers.ValidationError('Not Exists')
         instance.subject = class_detail
@@ -218,6 +218,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
 class NotesSerializer(serializers.ModelSerializer):
     title = serializers.CharField()
+    subject = SubjectGetSerializer()
     file = serializers.FileField(required=False)
     created_on = serializers.CharField(required=False)
     created_by = TeacherViewSerializer(required=False)
@@ -229,8 +230,8 @@ class NotesSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         subject = validated_data.pop('subject')
-        if Class.objects.filter(id=subject['id']).exists():
-            class_detail = Class.objects.get(id=subject['id'])
+        if Subject.objects.filter(id=subject['id']).exists():
+            class_detail = Subject.objects.get(id=subject['id'])
         else:
             raise serializers.ValidationError('Not Exists')
         if Teacher.objects.filter(user=User.objects.get(username=self.context['request'].user.username)).exists():
@@ -245,8 +246,8 @@ class NotesSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         subject = validated_data.pop('subject')
-        if Class.objects.filter(id=subject['id']).exists():
-            class_detail = Class.objects.get(id=subject['id'])
+        if Subject.objects.filter(id=subject['id']).exists():
+            class_detail = Subject.objects.get(id=subject['id'])
         else:
             raise serializers.ValidationError('Not Exists')
         instance.subject = class_detail

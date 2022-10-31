@@ -37,7 +37,7 @@ class Message(models.Model):
 
 class Assignment(models.Model):
     title = models.CharField(max_length=255)
-    subject = models.ForeignKey(Class, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     assigned_date = models.DateField()
     deadline_date = models.DateField()
     status = models.CharField(max_length=255, choices=submitted, blank=True, null=True)
@@ -46,7 +46,7 @@ class Assignment(models.Model):
 
 class Notes(models.Model):
     title = models.CharField(max_length=255)
-    subject = models.ForeignKey(Class, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     file = models.FileField(upload_to='note/')
     created_on = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(Teacher, on_delete=models.CASCADE)
