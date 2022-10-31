@@ -32,8 +32,9 @@ class SubjectViewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SubjectSerializer(serializers.ModelSerializer):
-    subject = SubjectViewSerializer()
-    subject_name = serializers.CharField()
+    id = serializers.IntegerField()
+    subject = SubjectViewSerializer(required=False)
+    subject_name = serializers.CharField(required=False)
     created_on= serializers.CharField(required=False)
     created_by = TeacherViewSerializer(required=False)
     
