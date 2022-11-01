@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status, viewsets, generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny,IsAdminUser
 from rest_framework.generics import ListCreateAPIView
 from .permissions import *
 from django.db.models import Q
@@ -53,6 +53,19 @@ class LogOutView(APIView):
     
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteUserView(APIView):
+    permission_classes = [IsAdminUser]
+    def post(self,request,pk):
+        if request.user.id == pk:
+            return Response('You are superadmin and this is superadmin id and you cannot delete yourself')
+        else:
+            user = User.objects.filter(id=pk).first()
+            if not user:
+                return Response('The user with this id doesnot exits')
+            user.delete()
+        return Response('The user is deleted')
+
             
 
 class StudentViewSet(viewsets.ModelViewSet):

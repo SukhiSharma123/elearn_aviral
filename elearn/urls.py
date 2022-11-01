@@ -3,6 +3,7 @@ from .views import *
 
 urlpatterns = [
     path('books/',CreateandGetBooks.as_view()),
+    path('books/<int:pk>/',UpdateBooks.as_view()),
     path('class/',CreateandGetClass.as_view()),
     path('update_class/<int:pk>/',UpdateClass.as_view()),
     path('fee_notifications/',CreateandGetFeeNotification.as_view()),
