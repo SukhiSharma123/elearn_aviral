@@ -1,16 +1,7 @@
 from rest_framework import serializers
 from .models import *
 
-class CreateandListBooksSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Books
-        fields = '__all__'
 
-    def validate(self,attrs):
-        if Settings.objects.all().first().number_of_books_boolean:
-            if Books.objects.count()==400:
-                raise serializers.ValidationError('More Books cannot be added cause there is limitation in settings')
-        return attrs
 
 
 class CreateandShowFeeNotificationSerializer(serializers.ModelSerializer):
@@ -28,8 +19,18 @@ class CreateandShowClassSerializer(serializers.ModelSerializer):
             if Class.objects.count()==20:
                 raise serializers.ValidationError('More classes cannot be added cause there is limitation in settings')
         return attrs
+class CreateandListBooksSerializer(serializers.ModelSerializer):
 
-
+    class Meta:
+        model = Books
+        fields = ['name','code_number','grade']
+   
+    def validate(self,attrs):
+        if Settings.objects.all().first().number_of_books_boolean:
+            if Books.objects.count()==400:
+                raise serializers.ValidationError('More Books cannot be added cause there is limitation in settings')
+        return attrs
+    
 class CreateandShowEventNotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventNotification

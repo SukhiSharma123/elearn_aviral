@@ -82,5 +82,5 @@ class UpdateFeedBack(RetrieveUpdateDestroyAPIView):
 
 class CreateAboutAmdinView(ListCreateAPIView):
     permission_classes=[IsAuthenticated]
-    serializer_class=[AboutAdminSerializer]
+    serializer_class=AboutAdminSerializer
     queryset = AboutAdmin.objects.all()

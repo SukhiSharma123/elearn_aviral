@@ -36,7 +36,7 @@ class Class(models.Model):
         return self.faculty
 class Books(models.Model):
     name = models.CharField(max_length=100)
-    year = models.CharField(max_length=20,choices=year)
+    grade = models.ForeignKey(Class,on_delete=models.PROTECT)
     code_number = models.CharField(max_length=20)
 
 
@@ -45,7 +45,7 @@ class Books(models.Model):
 
 
 class FeeNotification(models.Model):
-    batch_name= models.CharField(max_length=10,choices=faculty)
+    grade = models.ForeignKey(Class,on_delete=models.PROTECT)
     message = models.CharField(max_length=200)
 
     def __str__(self):
@@ -53,7 +53,7 @@ class FeeNotification(models.Model):
 
 
 class EventNotification(models.Model):
-    batch_name = models.CharField(max_length=20,choices = faculty)
+    grade = models.ForeignKey(Class,on_delete=models.PROTECT)
     message = models.CharField(max_length=200)
 
     def __str__(self):
